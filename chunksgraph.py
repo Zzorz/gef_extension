@@ -50,7 +50,7 @@ class HeapGraph(GenericCommand):
                 break
 
             if nb:
-                graph.add_node(Node(hex(current_chunk.address),label="Chunk%d@0x%016x\n0x%016x | 0x%016x\n0x%016x | 0x%016x"%(counts,current_chunk.address,current_chunk.get_prev_chunk_size(),read_int_from_memory(current_chunk.size_addr),current_chunk.fd,current_chunk.bk)))
+                graph.add_node(Node(hex(current_chunk.address),label="Chunk%d@0x%016x\n0x%016x | 0x%016x\n0x%016x | 0x%016x"%(counts,current_chunk.address-0x10,current_chunk.get_prev_chunk_size(),read_int_from_memory(current_chunk.size_addr),current_chunk.fd,current_chunk.bk)))
                 counts+=1
 
             next_chunk = current_chunk.get_next_chunk()

@@ -14,7 +14,7 @@ class FastGraph(GenericCommand):
 
     def chunk_to_node(self,chunk):
         length = str(2*self.capsize)
-        lab = ("Chunk@0x%0"+length+"x\n0x%0"+length+"x | 0x%0"+length+"x\n0x%0"+length+"x | 0x%0"+length+"x")%(chunk.address,chunk.get_prev_chunk_size(),chunk.size,chunk.fd,chunk.bk)
+        lab = ("Chunk@0x%0"+length+"x\n0x%0"+length+"x | 0x%0"+length+"x\n0x%0"+length+"x | 0x%0"+length+"x")%(chunk.address-0x10,chunk.get_prev_chunk_size(),read_int_from_memory(chunk.size_addr),chunk.fd,chunk.bk)
         return Node(hex(chunk.address),label=lab)
 
     @only_if_gdb_running
@@ -51,7 +51,8 @@ class FastGraph(GenericCommand):
             err("empty")
             return
         graph.add_node(self.chunk_to_node(chunk))
-        edges.add(tuple((hex(chunk.address),"Fastbin%d"%idx)))
+
+        edges.add(tuple(("Fastbin%d"%idx,hex(chunk.address))))
 
         prev_chunk = None
         while True:
@@ -59,7 +60,7 @@ class FastGraph(GenericCommand):
             chunk = GlibcChunk(read_int_from_memory(chunk.address),from_base=True)
             if lookup_address(chunk.address).valid:
                 graph.add_node(self.chunk_to_node(chunk))
-                edges.add(tuple((hex(chunk.address),hex(prev_chunk.address))))
+                edges.add(tuple((hex(prev_chunk.address),hex(chunk.address))))
                 if chunk.address in chunks:
                     break
                 else:
