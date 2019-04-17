@@ -48,10 +48,7 @@ class Tcache(GenericCommand):
                     else:
                         break
 
-                print('\n')
-
-
-
+        print('\n')
         return 0
 
 register_external_command(Tcache())
